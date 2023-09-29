@@ -39,17 +39,29 @@ const dataset = [
 
 export function MyApp() {
     const [toggleCharts, setToggleCharts] = useState("lineChart");
+    const [loading, setLoading] = useState(false);
     const handleHeaderClick = () => {
         if (toggleCharts === "lineChart"){
-            setToggleCharts("barChart");
+            setLoading(true);
+            setTimeout(() => {
+                setLoading(false);
+                setToggleCharts("barChart");
+            }, 2000);
         } else {
-            setToggleCharts("lineChart");
+            setLoading(true);
+            setTimeout(() => {
+                setLoading(false);
+                setToggleCharts("lineChart")
+            }, 2000);
         }
     };
+    const contentTitle = toggleCharts === 'lineChart' ? 'Line Chart' : 'Bar Chart';
+    const switchToChart = toggleCharts === 'lineChart' ? 'Bar Chart' : 'Line Chart';
     return <div>
             <Card header={
                 <CardHeader 
-                titleText="Card" 
+                titleText="Stock Prices" 
+                subtitleText={`Click here to switch to ${switchToChart}`}
                 interactive 
                 onClick={handleHeaderClick}
                 avatar={<Icon name={ toggleCharts === "lineChart" ? lineChartIcon : barChartIcon } />}
@@ -58,19 +70,21 @@ export function MyApp() {
                 style={{ width: "300px" }}
             >
                 <Text style={ spacing.sapUiContentPadding }>
-                    This is the area of the Card
+                    {contentTitle}
                 </Text>
                 {toggleCharts === "lineChart" ? ( 
                     <LineChart 
                     measures={[{ accessor: "data", label: "Stock Price" }]} 
                     dimensions={[{ accessor: "month" }]} 
                     dataset={dataset}
+                    loading={loading}
                 />
                 ) : (
                     <BarChart 
                     measures={[{ accessor: "data", label: "Stock Price" }]} 
                     dimensions={[{ accessor: "month" }]} 
                     dataset={dataset}
+                    loading={loading}
                 />
                 )}
             </Card>
