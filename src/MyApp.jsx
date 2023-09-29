@@ -1,7 +1,10 @@
-import React from "react";
-import { Card, CardHeader, Text } from "@ui5/webcomponents-react";
+import React, { useState } from "react";
+import { Card, CardHeader, Text, Icon } from "@ui5/webcomponents-react";
 import { spacing } from "@ui5/webcomponents-react-base";
 import { BarChart, LineChart } from "@ui5/webcomponents-react-charts";
+import lineChartIcon from '@ui5/webcomponents-icons/dist/line-chart.js';
+import barChartIcon from '@ui5/webcomponents-icons/dist/horizontal-bar-chart.js';
+
 
 const dataset = [
     {
@@ -35,8 +38,13 @@ const dataset = [
   ];
 
 export function MyApp() {
+    const [toggleCharts, setToggleCharts] = useState("lineChart");
     const handleHeaderClick = () => {
-        alert("Header clicked");
+        if (toggleCharts === "lineChart"){
+            setToggleCharts("barChart");
+        } else {
+            setToggleCharts("lineChart");
+        }
     };
     return <div>
             <Card header={
@@ -44,6 +52,7 @@ export function MyApp() {
                 titleText="Card" 
                 interactive 
                 onClick={handleHeaderClick}
+                avatar={<Icon name={ toggleCharts === "lineChart" ? lineChartIcon : barChartIcon } />}
                 />
                 } 
                 style={{ width: "300px" }}
@@ -51,16 +60,19 @@ export function MyApp() {
                 <Text style={ spacing.sapUiContentPadding }>
                     This is the area of the Card
                 </Text>
-                <LineChart 
+                {toggleCharts === "lineChart" ? ( 
+                    <LineChart 
                     measures={[{ accessor: "data", label: "Stock Price" }]} 
                     dimensions={[{ accessor: "month" }]} 
                     dataset={dataset}
                 />
-                <BarChart 
+                ) : (
+                    <BarChart 
                     measures={[{ accessor: "data", label: "Stock Price" }]} 
                     dimensions={[{ accessor: "month" }]} 
                     dataset={dataset}
                 />
+                )}
             </Card>
         </div>;
 }
